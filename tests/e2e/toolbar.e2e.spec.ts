@@ -21,8 +21,7 @@ const test = base.extend<{ page: Page }>({
     const userDataDir = mkdtempSync(join(os.tmpdir(), 'pw-json-formatter-'))
 
     const context = await chromium.launchPersistentContext(userDataDir, {
-      // Extensions require headful (non-headless) Chromium
-      headless: !!process.env.CI,
+      headless: true,
       args: [
         `--disable-extensions-except=${distDir}`,
         `--load-extension=${distDir}`,
