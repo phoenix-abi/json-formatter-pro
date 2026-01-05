@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON Formatter Pro - Style Test Pages</title>
+  <link rel="stylesheet" href="../../src/style.css">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 12px;
+      color: var(--fg);
+    }
+    p {
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin: 8px 0;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 14px;
+      padding: 8px 12px;
+      display: inline-block;
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+    a:hover {
+      background: rgba(128, 128, 128, 0.1);
+    }
+    code {
+      background: rgba(128, 128, 128, 0.15);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <h1>JSON Formatter Pro - Style Test Pages</h1>
+  <p>Select a fixture to preview and test stylesheet changes:</p>
+  <ul>
+{generatedFileList}
+  </ul>
+  <p style="margin-top: 32px;">
+    To regenerate these pages, run:<br>
+    <code>npm run style:preview</code>
+  </p>
+</body>
+</html>

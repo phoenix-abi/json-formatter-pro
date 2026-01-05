@@ -1,0 +1,26 @@
+{
+  "description": "Golden performance test cases for quick iteration during optimization work. Run with: npm run perf:golden",
+  "estimatedDuration": "< 10 seconds",
+  "suites": [
+    {
+      "suite": "render-buildDom",
+      "case": "render_object_shallow",
+      "rationale": "Tests object key iteration and property rendering - common hotspot"
+    },
+    {
+      "suite": "render-buildDom",
+      "case": "render_object_deep",
+      "rationale": "Tests recursive rendering and stack depth - stress test for nested structures"
+    },
+    {
+      "suite": "render-buildDom",
+      "case": "render_array_large",
+      "rationale": "Tests array iteration and DOM append performance - highest element count"
+    },
+    {
+      "suite": "interaction",
+      "case": "expand_medium_array",
+      "rationale": "Tests expand/collapse interaction latency - user-perceived performance"
+    }
+  ]
+}

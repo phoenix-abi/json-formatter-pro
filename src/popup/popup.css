@@ -1,0 +1,332 @@
+html {
+    min-height: 16em;
+    min-width: 16em;
+    font-family: system-ui, sans-serif;
+}
+
+body {
+  margin: .3rem;
+}
+
+fieldset {
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid currentColor;
+}
+
+#permission-section {
+  margin-bottom: 0.8rem;
+}
+
+legend {
+  font-weight: 600;
+  padding: 0 5px;
+}
+
+label {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  height: 24px;
+}
+
+label > input {
+  position: relative;
+  top: -2px;
+}
+
+/* Permission UI styles */
+button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid #333;
+  background: #333;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  width: 100%;
+  font-family: inherit;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button:active {
+  opacity: 0.8;
+}
+
+/* Revoke button - secondary style, less prominent */
+button.revoke-button {
+  margin-top: 8px;
+  background: transparent;
+  color: #666;
+  border-color: #ccc;
+  font-size: 13px;
+}
+
+button.revoke-button:hover {
+  background: #f5f5f5;
+  opacity: 1;
+}
+
+button.revoke-button:active {
+  background: #e5e5e5;
+}
+
+.status-active {
+  color: #0d9488;
+  font-weight: 500;
+  padding: 4px 0;
+}
+
+.special-url-message {
+  color: #666;
+  font-size: 13px;
+  padding: 4px 0;
+}
+
+.message {
+  margin-top: 8px;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 13px;
+  transition: opacity 0.3s;
+}
+
+.message.success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.message.error {
+  background: #fed7d7;
+  color: #9b2c2c;
+}
+
+.message.hidden {
+  display: none;
+}
+
+/* Parser Status UI styles */
+#parser-section {
+  margin-bottom: 0.8rem;
+}
+
+.parser-status-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.parser-current {
+  font-size: 14px;
+}
+
+.parser-name {
+  color: #0969da;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.parser-reason {
+  color: #666;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.parser-info {
+  color: #666;
+  font-size: 11px;
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.parser-unavailable {
+  color: #666;
+  font-size: 13px;
+  padding: 4px 0;
+}
+
+#parser-actions {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.parser-toggle-button {
+  background: #0969da;
+  border-color: #0969da;
+  color: white;
+}
+
+.parser-toggle-button:hover {
+  background: #0860ca;
+  border-color: #0860ca;
+  opacity: 1;
+}
+
+.parser-settings-link {
+  text-align: center;
+  color: #0969da;
+  text-decoration: none;
+  font-size: 13px;
+  padding: 4px;
+}
+
+.parser-settings-link:hover {
+  text-decoration: underline;
+}
+
+/* Popup Header styles */
+.popup-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e5e5;
+  margin: -0.3rem -0.3rem 0.8rem -0.3rem;
+}
+
+.popup-branding {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.popup-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.popup-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2328;
+}
+
+.popup-options-button {
+  width: auto;
+  padding: 6px 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #656d76;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.popup-options-button:hover {
+  background: #f3f4f6;
+  border-color: #d0d7de;
+  opacity: 1;
+}
+
+.popup-options-button:active {
+  background: #e5e7eb;
+  opacity: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #292a2d;
+    color: #e8eaed;
+  }
+
+  button {
+    border-color: #555;
+    background: #555;
+  }
+
+  button.revoke-button {
+    color: #aaa;
+    border-color: #555;
+  }
+
+  button.revoke-button:hover {
+    background: #3a3a3a;
+  }
+
+  button.revoke-button:active {
+    background: #4a4a4a;
+  }
+
+  .status-active {
+    color: #5eead4;
+  }
+
+  .special-url-message {
+    color: #aaa;
+  }
+
+  .message.success {
+    background: #064e3b;
+    color: #a7f3d0;
+  }
+
+  .message.error {
+    background: #7f1d1d;
+    color: #fca5a5;
+  }
+
+  .parser-name {
+    color: #58a6ff;
+  }
+
+  .parser-reason {
+    color: #aaa;
+  }
+
+  .parser-info {
+    color: #aaa;
+    border-top-color: #555;
+  }
+
+  .parser-unavailable {
+    color: #aaa;
+  }
+
+  .parser-toggle-button {
+    background: #58a6ff;
+    border-color: #58a6ff;
+  }
+
+  .parser-toggle-button:hover {
+    background: #79c0ff;
+    border-color: #79c0ff;
+  }
+
+  .parser-settings-link {
+    color: #58a6ff;
+  }
+
+  .popup-header {
+    border-bottom-color: #444;
+  }
+
+  .popup-title {
+    color: #e8eaed;
+  }
+
+  .popup-options-button {
+    color: #adbac7;
+  }
+
+  .popup-options-button:hover {
+    background: #373e47;
+    border-color: #444c56;
+  }
+
+  .popup-options-button:active {
+    background: #444c56;
+  }
+}

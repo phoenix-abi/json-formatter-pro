@@ -1,0 +1,30 @@
+/**
+ * ParserSelector Component Styles
+ *
+ * Styles for the JSON parser selection dropdown component.
+ * Inherits most styles from Select.css.
+ */
+
+.parser-selector {
+  /* Container for future custom dropdown enhancement */
+}
+
+.parser-selector-button {
+  /* Custom dropdown button (future enhancement) */
+}
+
+.parser-selector-menu {
+  /* Custom dropdown menu (future enhancement) */
+}
+
+.parser-selector-option {
+  /* Individual option in custom dropdown (future enhancement) */
+}
+
+.parser-selector-divider {
+  /* Divider between options and settings link (future enhancement) */
+}
+
+.parser-selector-settings-link {
+  /* Settings link at bottom of dropdown (future enhancement) */
+}

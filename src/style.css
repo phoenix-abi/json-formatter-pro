@@ -1,0 +1,804 @@
+/**
+ * JSON Formatter Pro Styles
+ * GitHub-inspired color scheme and typography for familiar developer experience
+ */
+
+@layer tokens, themes, base, components, states;
+
+/*
+ * === LAYER: tokens ===
+ * Design tokens with GitHub-inspired defaults (light mode).
+ * Components reference these via CSS custom properties (--var-name).
+ */
+@layer tokens {
+  :root {
+    color-scheme: light dark;
+
+    /* Surfaces & text (GitHub light theme) */
+    --bg: #ffffff;
+    --fg: #24292f;
+    --muted: #57606a;
+    --border-subtle: #d0d7de;
+
+    /* Accent colors */
+    --accent: #0969da;
+    --focus-ring: var(--accent);
+
+    /* JSON syntax highlighting (GitHub light) */
+    --code-bg: #f6f8fa;
+    --code-key: #24292f;
+    --code-string: #0a3069;
+    --code-number: #0550ae;
+    --code-boolean: #953800;
+    --code-null: #953800;
+    --code-punctuation: #24292f;
+
+    /* Interactive elements */
+    --btn-fg: #24292f;
+    --btn-bg: #f6f8fa;
+    --btn-border: rgba(27, 31, 36, 0.15);
+    --btn-shadow: 0 1px 0 rgba(27, 31, 36, 0.04);
+    --btn-bg-hover: #f3f4f6;
+    --btn-border-hover: rgba(27, 31, 36, 0.25);
+    --btn-bg-active: #ebecef;
+    --btn-selected-bg: #ddf4ff;
+    --btn-selected-border: rgba(9, 105, 218, 0.4);
+    --accent-hover: #0860ca;
+    --btn-primary-bg: #2da44e;
+    --btn-primary-border: rgba(27, 31, 36, 0.15);
+    --btn-primary-hover-bg: #2c974b;
+    --btn-primary-active-bg: #298e46;
+    --btn-danger-bg: #cf222e;
+    --btn-danger-border: rgba(27, 31, 36, 0.15);
+    --btn-danger-hover-bg: #a40e26;
+    --btn-danger-active-bg: #8e1327;
+
+    /* UI elements */
+    --caret: #57606a;
+    --ellipsis: #57606a;
+    --size-annotation: #57606a;
+  }
+}
+
+/*
+ * === LAYER: themes ===
+ * Theme-specific token overrides. Components automatically adapt.
+ */
+
+/* Explicit dark theme (data-theme="dark") */
+@layer themes {
+  :root[data-theme="dark"] {
+    /* Surfaces & text (GitHub dark theme) */
+    --bg: #0d1117;
+    --fg: #c9d1d9;
+    --muted: #8b949e;
+    --border-subtle: #30363d;
+
+    /* JSON syntax (GitHub dark) */
+    --code-bg: #161b22;
+    --code-key: #c9d1d9;
+    --code-string: #a5d6ff;
+    --code-number: #79c0ff;
+    --code-boolean: #ffa657;
+    --code-null: #ffa657;
+    --code-punctuation: #c9d1d9;
+
+    /* Interactive elements */
+    --btn-fg: #c9d1d9;
+    --btn-bg: #21262d;
+    --btn-border: rgba(240, 246, 252, 0.1);
+    --btn-shadow: none;
+    --btn-bg-hover: #30363d;
+    --btn-border-hover: rgba(240, 246, 252, 0.2);
+    --btn-bg-active: #282e33;
+    --btn-selected-bg: rgba(56, 139, 253, 0.15);
+    --btn-selected-border: rgba(56, 139, 253, 0.4);
+    --accent-hover: #58a6ff;
+    --btn-primary-bg: #238636;
+    --btn-primary-border: rgba(240, 246, 252, 0.1);
+    --btn-primary-hover-bg: #2ea043;
+    --btn-primary-active-bg: #26923f;
+    --btn-danger-bg: #da3633;
+    --btn-danger-border: rgba(240, 246, 252, 0.1);
+    --btn-danger-hover-bg: #b62324;
+    --btn-danger-active-bg: #a0191f;
+
+    /* UI elements */
+    --caret: #8b949e;
+    --ellipsis: #8b949e;
+    --size-annotation: #8b949e;
+  }
+
+  /* System dark preference (prefers-color-scheme: dark) */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      /* Inherit dark theme tokens */
+      --bg: #0d1117;
+      --fg: #c9d1d9;
+      --muted: #8b949e;
+      --border-subtle: #30363d;
+
+      --code-bg: #161b22;
+      --code-key: #c9d1d9;
+      --code-string: #a5d6ff;
+      --code-number: #79c0ff;
+      --code-boolean: #ffa657;
+      --code-null: #ffa657;
+      --code-punctuation: #c9d1d9;
+
+      --btn-fg: #c9d1d9;
+      --btn-bg: #21262d;
+      --btn-border: rgba(240, 246, 252, 0.1);
+      --btn-shadow: none;
+      --btn-bg-hover: #30363d;
+      --btn-border-hover: #8b949e;
+      --btn-bg-active: hsla(212, 12%, 18%, 1);
+      --btn-selected-bg: rgba(56, 139, 253, 0.15);
+      --btn-selected-border: rgba(56, 139, 253, 0.4);
+
+      --caret: #8b949e;
+      --ellipsis: #8b949e;
+      --size-annotation: #8b949e;
+    }
+  }
+
+  /* High contrast adjustments */
+  @media (prefers-contrast: more) {
+    :root {
+      --border-subtle: color-mix(in oklab, var(--fg), var(--bg) 70%);
+      --focus-ring: color-mix(in oklab, var(--accent), white 30%);
+    }
+  }
+
+  /* Windows High Contrast mode */
+  @media (forced-colors: active) {
+    :root {
+      color-scheme: light dark;
+    }
+    :where(#buttonPlain, #buttonFormatted) {
+      background: Canvas;
+      color: ButtonText;
+      border-color: ButtonText;
+      forced-color-adjust: none;
+      text-shadow: none;
+    }
+  }
+}
+
+/*
+ * === LAYER: base ===
+ * Document-level defaults and reset styles
+ */
+@layer base {
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    margin: 0;
+    padding-top: 1px; /* Prevent margin collapse */
+    overflow-y: scroll !important;
+    user-select: text;
+    position: relative;
+
+    /* GitHub-inspired font stack */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
+      Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+  }
+}
+
+/*
+ * === LAYER: components ===
+ * UI components and layout structure
+ */
+@layer components {
+  /* Toolbar positioning */
+  #optionBar {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    z-index: 10;
+    background: var(--bg);
+    box-shadow: 0 0 4px 4px var(--bg);
+    padding: 5px;
+    user-select: none;
+  }
+
+  /* Toggle buttons (Raw/Parsed) */
+  #buttonFormatted,
+  #buttonPlain {
+    display: inline-block;
+    min-width: 4em;
+    width: 80px;
+    padding: 5px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 20px;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid var(--btn-border);
+    background-color: var(--btn-bg);
+    color: var(--btn-fg);
+    box-shadow: var(--btn-shadow);
+    transition: 80ms cubic-bezier(0.33, 1, 0.68, 1);
+    transition-property: color, background-color, box-shadow, border-color;
+  }
+
+  #buttonFormatted {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-left: 0;
+  }
+
+  #buttonPlain {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+  }
+
+  /* JSON tree layout */
+  #jsonFormatterParsed {
+    padding: 16px 28px;
+    line-height: 1.6;
+    font-size: 13px;
+
+    /* GitHub monospace font stack */
+    font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
+      'Liberation Mono', monospace;
+  }
+
+  #jsonFormatterRaw {
+    padding: 36px 16px 16px;
+  }
+
+  /* Entry structure */
+  .entry {
+    display: block;
+    padding-left: 20px;
+    margin-left: -20px;
+    position: relative;
+    content-visibility: auto;
+  }
+
+  /* Collapsed state */
+  .collapsed {
+    white-space: nowrap;
+  }
+
+  .collapsed > .blockInner {
+    display: none;
+  }
+
+  .collapsed > .ell::after {
+    content: '…';
+    font-weight: bold;
+  }
+
+  .collapsed > .ell {
+    margin: 0 4px;
+    color: var(--ellipsis);
+  }
+
+  .collapsed .entry {
+    display: inline;
+  }
+
+  .collapsed .entry .e {
+    display: none;
+  }
+
+  .collapsed::after {
+    content: attr(data-size);
+    color: var(--size-annotation);
+    margin-left: 6px;
+    font-size: 12px;
+  }
+
+  /* Expand/collapse caret */
+  .e {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    left: 0;
+    top: 1px;
+    color: var(--caret);
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.5;
+    cursor: pointer;
+  }
+
+  .e::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 4px 0 4px 7px;
+    border-color: transparent transparent transparent currentColor;
+    transform: rotate(90deg);
+    transition: transform 0.15s ease;
+  }
+
+  .collapsed > .e::after {
+    transform: rotate(0deg);
+  }
+
+  /* Indentation guides */
+  .blockInner {
+    display: block;
+    padding-left: 24px;
+    border-left: 1px dotted var(--border-subtle);
+    margin-left: 2px;
+  }
+
+  /* Syntax highlighting */
+  .k {
+    color: var(--code-key);
+    font-weight: 600;
+  }
+
+  .s {
+    color: var(--code-string);
+    word-wrap: break-word;
+  }
+
+  .n {
+    color: var(--code-number);
+    font-weight: 500;
+  }
+
+  .bl {
+    color: var(--code-boolean);
+    font-weight: 600;
+  }
+
+  .nl {
+    color: var(--code-null);
+    font-weight: 600;
+  }
+
+  .b {
+    color: var(--code-punctuation);
+    font-weight: bold;
+  }
+
+  /* Preact component class aliases (for renderer parity) */
+  .oBrace,
+  .cBrace,
+  .oBracket,
+  .cBracket {
+    color: var(--code-punctuation);
+    font-weight: bold;
+  }
+
+  .ellipsis {
+    margin: 0 4px;
+    color: var(--ellipsis);
+    font-weight: bold;
+  }
+
+  .size {
+    color: var(--size-annotation);
+  }
+
+  /* Links in string values */
+  a:link,
+  a:visited {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* Utility classes */
+  [hidden] {
+    display: none !important;
+  }
+
+  span {
+    white-space: pre-wrap;
+  }
+
+  /* Loading spinner */
+  #spinner {
+    animation: spin 2s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* === Preact Component Styles === */
+  
+  /* Toolbar */
+  .toolbar {
+    display: block;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 12px 16px;
+    box-shadow: 0 1px 0 rgba(31, 35, 40, 0.04);
+  }
+
+  .toolbar.sticky {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+
+  .toolbar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .toolbar-left,
+  .toolbar-center,
+  .toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .toolbar-left {
+    flex: 0 0 auto;
+  }
+
+  .toolbar-center {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  .toolbar-right {
+    flex: 0 0 auto;
+  }
+
+  /* Toggle */
+  .toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
+      Helvetica, Arial, sans-serif;
+  }
+
+  .toggle-label-text {
+    color: var(--fg);
+    font-size: 14px;
+    font-weight: 500;
+    user-select: none;
+  }
+
+  /* Switch button */
+  .toggle-switch {
+    position: relative;
+    width: 40px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  /* Switch track */
+  .toggle-switch-track {
+    display: block;
+    width: 40px;
+    height: 20px;
+    border-radius: 10px;
+    background: var(--btn-bg);
+    border: 1px solid var(--border-subtle);
+    transition: background 0.2s cubic-bezier(0.2, 0, 0, 1);
+    position: relative;
+  }
+
+  /* Switch thumb (the sliding part) */
+  .toggle-switch-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(31, 35, 40, 0.12), 0 1px 2px rgba(31, 35, 40, 0.24);
+    transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  /* ON state (formatted/parsed) */
+  .toggle-switch.on .toggle-switch-track {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .toggle-switch.on .toggle-switch-thumb {
+    transform: translateX(20px);
+  }
+
+  /* Select inputs */
+  .select,
+  .theme-picker {
+    padding: 5px 12px;
+    padding-right: 32px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    background: var(--btn-bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
+      Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    cursor: pointer;
+    min-width: 100px;
+    transition: all 0.15s cubic-bezier(0.2, 0, 0, 1);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.427 7.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 7H4.604a.25.25 0 00-.177.427z' fill='%23586069'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px 16px;
+  }
+
+  .select:disabled,
+  .theme-picker:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Option styling */
+  .select option,
+  .theme-picker option {
+    background-color: var(--bg);
+    color: var(--fg);
+    padding: 8px 12px;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 5px 16px;
+    border: 1px solid;
+    border-radius: 6px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
+      Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    cursor: pointer;
+    transition: all 0.15s cubic-bezier(0.2, 0, 0, 1);
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Secondary variant (default) */
+  .btn-secondary {
+    background: var(--btn-bg);
+    border-color: var(--border-subtle);
+    color: var(--fg);
+  }
+
+  /* Primary variant */
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--border-subtle);
+    color: #ffffff;
+  }
+
+  /* Tertiary variant (minimal) */
+  .btn-tertiary {
+    background: transparent;
+    border-color: transparent;
+    color: var(--accent);
+  }
+
+  /* Danger variant */
+  .btn-danger {
+    background: #cf222e;
+    border-color: var(--border-subtle);
+    color: #ffffff;
+  }
+
+  /* Parser selector */
+  .parser-selector {
+    /* Container for future custom dropdown enhancement */
+  }
+
+  .parser-selector-button {
+    /* Custom dropdown button (future enhancement) */
+  }
+
+  .parser-selector-menu {
+    /* Custom dropdown menu (future enhancement) */
+  }
+
+  .parser-selector-option {
+    /* Individual option in custom dropdown (future enhancement) */
+  }
+
+  .parser-selector-divider {
+    /* Divider between options and settings link (future enhancement) */
+  }
+
+  .parser-selector-settings-link {
+    /* Settings link at bottom of dropdown (future enhancement) */
+  }
+}
+
+/*
+ * === LAYER: states ===
+ * Interactive states (hover, active, focus, selected)
+ */
+@layer states {
+  /* Button states */
+  :is(#buttonPlain, #buttonFormatted):not(.selected):hover {
+    background-color: var(--btn-bg-hover);
+    border-color: var(--btn-border-hover);
+  }
+
+  :is(#buttonPlain, #buttonFormatted):active {
+    background-color: var(--btn-bg-active);
+    transform: scale(0.98);
+  }
+
+  :is(#buttonPlain, #buttonFormatted).selected {
+    background-color: var(--btn-selected-bg);
+    border-color: var(--btn-selected-border);
+    font-weight: 600;
+  }
+
+  :is(#buttonPlain, #buttonFormatted):focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Caret interaction */
+  .e:hover {
+    opacity: 0.8;
+  }
+
+  .e:active {
+    opacity: 1;
+  }
+
+  /* Link interaction */
+  a:hover,
+  a:active {
+    text-decoration: underline;
+    color: var(--accent);
+  }
+
+  /* Accessible focus rings */
+  :where(button, [role="button"], a, input, select, textarea):focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* Component-specific states */
+  
+  /* Toggle switch hover */
+  .toggle-switch:hover .toggle-switch-track {
+    background: var(--btn-bg-hover);
+  }
+
+  .toggle-switch.on:hover .toggle-switch-track {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+  }
+
+  /* Toggle switch active */
+  .toggle-switch:active .toggle-switch-thumb {
+    width: 18px;
+  }
+
+  .toggle-switch.on:active .toggle-switch-thumb {
+    transform: translateX(16px);
+  }
+
+  /* Select hover */
+  .select:hover,
+  .theme-picker:hover {
+    background-color: var(--btn-bg-hover);
+    border-color: var(--btn-border-hover);
+  }
+
+  /* Select focus */
+  .select:focus-visible,
+  .theme-picker:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 0;
+    border-color: var(--focus-ring);
+  }
+
+  /* Button variants hover/active */
+  .btn-secondary:hover:not(:disabled) {
+    background: var(--btn-bg-hover);
+    border-color: var(--btn-border-hover);
+  }
+
+  .btn-secondary:active:not(:disabled) {
+    background: var(--btn-bg-active);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: var(--btn-primary-hover-bg);
+  }
+
+  .btn-primary:active:not(:disabled) {
+    background: var(--btn-primary-active-bg);
+  }
+
+  .btn-tertiary:hover:not(:disabled) {
+    background: rgba(234, 238, 242, 0.5);
+  }
+
+  .btn-tertiary:active:not(:disabled) {
+    background: rgba(234, 238, 242, 1);
+  }
+
+  .btn-danger:hover:not(:disabled) {
+    background: var(--btn-danger-hover-bg);
+  }
+
+  .btn-danger:active:not(:disabled) {
+    background: var(--btn-danger-active-bg);
+  }
+
+  /* Dark theme hover states (via media query) */
+  @media (prefers-color-scheme: dark) {
+    .select:hover,
+    .theme-picker:hover {
+      background-color: var(--btn-bg-hover);
+      border-color: var(--btn-border-hover);
+    }
+
+    .btn-tertiary:hover:not(:disabled) {
+      background: rgba(177, 186, 196, 0.12);
+    }
+
+    .btn-tertiary:active:not(:disabled) {
+      background: rgba(177, 186, 196, 0.2);
+    }
+  }
+
+  /* Explicit dark theme overrides */
+  [data-theme='dark'] .select {
+    border-color: var(--border-subtle);
+    background-color: var(--btn-bg);
+    color: var(--fg);
+    background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.427 7.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 7H4.604a.25.25 0 00-.177.427z' fill='%238b949e'/%3E%3C/svg%3E");
+  }
+
+  [data-theme='dark'] .theme-picker {
+    border-color: var(--border-subtle);
+    background-color: var(--btn-bg);
+    color: var(--fg);
+    background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.427 7.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 7H4.604a.25.25 0 00-.177.427z' fill='%238b949e'/%3E%3C/svg%3E");
+  }
+
+  /* Override dark system preference when light theme is explicitly set */
+  @media (prefers-color-scheme: dark) {
+    [data-theme='light'] .select,
+    [data-theme='light'] .theme-picker {
+      border-color: var(--border-subtle);
+      background-color: var(--btn-bg);
+      color: var(--fg);
+      background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.427 7.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 7H4.604a.25.25 0 00-.177.427z' fill='%23586069'/%3E%3C/svg%3E");
+    }
+  }
+}

@@ -1,0 +1,183 @@
+{
+  "id": 252345,
+  "timestamp": "2024-01-01T00:00:00Z",
+  "active": true,
+  "array_0": [
+    252345,
+    "item_1",
+    false,
+    null,
+    577.2811982315034,
+    222554
+  ],
+  "array_1": [
+    252732,
+    "item_1",
+    false,
+    null,
+    261.9894705712795,
+    259570,
+    "item_6",
+    false,
+    null,
+    773.37477193214,
+    878318,
+    "item_11",
+    false,
+    null,
+    382.5288391672075,
+    52082
+  ],
+  "array_2": [
+    253120,
+    "item_1",
+    false,
+    null,
+    946.6977429110557,
+    296586,
+    "item_6",
+    true,
+    null
+  ],
+  "array_3": [
+    253507,
+    "item_1",
+    false,
+    null,
+    631.4060152508318,
+    333603,
+    "item_6",
+    false,
+    null,
+    268.79650610499084,
+    740392,
+    "item_11"
+  ],
+  "object_0": {
+    "k0": 639897,
+    "k1": "value_1_791",
+    "k2": false,
+    "k3": null,
+    "k4": 238.92017593607306
+  },
+  "object_1": {
+    "k0": 640285,
+    "k1": "value_1_882",
+    "k2": true,
+    "k3": null,
+    "k4": 275.936541846022,
+    "k5": 508384,
+    "k6": "value_6_484",
+    "k7": true,
+    "k8": null
+  },
+  "object_2": {
+    "k0": 640672,
+    "k1": "value_1_973",
+    "k2": true,
+    "k3": null,
+    "k4": 312.95290775597095,
+    "k5": 174850
+  },
+  "items_0": [
+    {
+      "id": 0,
+      "field_0": 415,
+      "field_1": "value_0_1",
+      "field_2": false,
+      "field_3": null,
+      "field_4": 702,
+      "field_5": "value_0_5"
+    },
+    {
+      "id": 1,
+      "field_0": "value_1_0",
+      "field_1": false,
+      "field_2": null,
+      "field_3": 774,
+      "field_4": "value_1_4",
+      "field_5": false
+    },
+    {
+      "id": 2,
+      "field_0": true,
+      "field_1": null,
+      "field_2": 577,
+      "field_3": "value_2_3",
+      "field_4": false,
+      "field_5": null
+    },
+    {
+      "id": 3,
+      "field_0": null,
+      "field_1": 340,
+      "field_2": "value_3_2",
+      "field_3": false,
+      "field_4": null,
+      "field_5": 936
+    },
+    {
+      "id": 4,
+      "field_0": 225,
+      "field_1": "value_4_1",
+      "field_2": false,
+      "field_3": null,
+      "field_4": 576,
+      "field_5": "value_4_5"
+    },
+    {
+      "id": 5,
+      "field_0": "value_5_0",
+      "field_1": false,
+      "field_2": null,
+      "field_3": 602,
+      "field_4": "value_5_4",
+      "field_5": true
+    },
+    {
+      "id": 6,
+      "field_0": true,
+      "field_1": null,
+      "field_2": 231,
+      "field_3": "value_6_3",
+      "field_4": true,
+      "field_5": null
+    },
+    {
+      "id": 7,
+      "field_0": null,
+      "field_1": 667,
+      "field_2": "value_7_2",
+      "field_3": false,
+      "field_4": null,
+      "field_5": 387
+    },
+    {
+      "id": 8,
+      "field_0": 136,
+      "field_1": "value_8_1",
+      "field_2": false,
+      "field_3": null,
+      "field_4": 136,
+      "field_5": "value_8_5"
+    },
+    {
+      "id": 9,
+      "field_0": "value_9_0",
+      "field_1": false,
+      "field_2": null,
+      "field_3": 26,
+      "field_4": "value_9_4",
+      "field_5": true
+    },
+    {
+      "id": 10,
+      "field_0": true,
+      "field_1": null,
+      "field_2": 904,
+      "field_3": "value_10_3",
+      "field_4": true,
+      "field_5": null
+    }
+  ]
+}

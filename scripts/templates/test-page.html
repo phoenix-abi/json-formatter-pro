@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON Formatter Pro - {fixtureName}</title>
+
+  <!-- Link to the unified stylesheet in src/ -->
+  <!-- This allows live-reload to work with IDE preview features -->
+  <link rel="stylesheet" href="../../src/style.css">
+
+  <style>
+    /* Additional styles for dev tools and instructions */
+    #instructions {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border-subtle);
+      padding: 12px;
+      border-radius: 4px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 12px;
+      max-width: 320px;
+      z-index: 10000;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #instructions h3 {
+      margin: 0 0 8px 0;
+      font-size: 13px;
+      color: var(--fg);
+      font-weight: 600;
+    }
+
+    #instructions ul {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    #instructions li {
+      margin: 4px 0;
+    }
+
+    #instructions code {
+      background: rgba(128, 128, 128, 0.15);
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-family: 'SF Mono', Monaco, monospace;
+    }
+
+    #instructions .fixture-name {
+      color: var(--accent);
+      font-weight: 500;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Toolbar container for Preact components -->
+  <div id="toolbar-container"></div>
+
+  <!-- Instructions Panel -->
+  <div id="instructions">
+    <h3>Style Development Mode</h3>
+    <ul>
+      <li>Edit <code>src/style.css</code></li>
+      <li>Changes appear instantly with live-reload</li>
+      <li>Click expanders to test collapse states</li>
+      <li>Toggle Raw/Parsed to test both views</li>
+      <li>Switch themes to test all color schemes</li>
+    </ul>
+    <div class="fixture-name">Fixture: {fixtureName}</div>
+  </div>
+
+  <!-- Parsed JSON Container -->
+  <div id="jsonFormatterParsed"></div>
+
+  <!-- Raw JSON Container -->
+  <div id="jsonFormatterRaw" hidden>
+    <pre>{rawJsonEscaped}</pre>
+  </div>
+
+  <!-- Data and inline JavaScript -->
+  <script>
+window.__FIXTURE_DATA__ = {rawJson};
+
+{inlineScript}
+  </script>
+</body>
+</html>

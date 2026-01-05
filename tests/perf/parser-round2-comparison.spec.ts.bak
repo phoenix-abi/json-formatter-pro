@@ -1,0 +1,384 @@
+/**
+ * Round 2 Revised: Optimization Comparison
+ *
+ * Compares parse-direct.ts (Round 1) vs parse-direct-optimized.ts (Round 2 Revised)
+ * Tests the performance impact of:
+ * - Property lookup reduction
+ * - Function inlining
+ * - Monomorphic operations
+ * - Branch reduction
+ *
+ * Expected: ~1.1x speedup from Round 2 optimizations (modest improvement)
+ */
+
+import { describe, it, expect } from 'vitest'
+import { performance } from 'node:perf_hooks'
+import { parseDirect } from '../../src/lib/parser/parse-direct'
+import { parseDirectOptimized } from '../../src/lib/parser/parse-direct-optimized'
+
+/**
+ * Benchmark statistics
+ */
+interface BenchStats {
+  avg: number
+  p50: number
+  p95: number
+  p99: number
+  min: number
+  max: number
+  n: number
+}
+
+/**
+ * Run a function N times and collect timing statistics
+ */
+function benchIters<T>(n: number, fn: () => T): BenchStats {
+  const times: number[] = []
+
+  // Warmup: run a few times to warm up JIT
+  for (let i = 0; i < Math.min(10, n); i++) {
+    fn()
+  }
+
+  // Actual benchmark
+  for (let i = 0; i < n; i++) {
+    const t0 = performance.now()
+    fn()
+    times.push(performance.now() - t0)
+  }
+
+  times.sort((a, b) => a - b)
+
+  const p50 = times[Math.floor(times.length * 0.5)]
+  const p95 = times[Math.floor(times.length * 0.95)]
+  const p99 = times[Math.floor(times.length * 0.99)]
+  const avg = times.reduce((a, b) => a + b, 0) / times.length
+  const min = times[0]
+  const max = times[times.length - 1]
+
+  return { avg, p50, p95, p99, min, max, n }
+}
+
+/**
+ * Generate a nested object of specified size (approximate)
+ */
+function generateNestedObject(targetSize: number): string {
+  const obj: Record<string, any> = {}
+  let counter = 0
+
+  while (JSON.stringify(obj).length < targetSize) {
+    const key = `key_${counter}`
+    const value =
+      counter % 3 === 0
+        ? `value_${counter}_with_some_content`
+        : counter % 3 === 1
+          ? counter * 1.5
+          : { nested: true, id: counter, data: [1, 2, 3] }
+
+    obj[key] = value
+    counter++
+  }
+
+  return JSON.stringify(obj)
+}
+
+/**
+ * Generate a large array with mixed content
+ */
+function generateLargeArray(targetSize: number): string {
+  const arr: any[] = []
+  let counter = 0
+
+  while (JSON.stringify(arr).length < targetSize) {
+    const item =
+      counter % 4 === 0
+        ? { id: counter, name: `Item ${counter}`, data: [1, 2, 3] }
+        : counter % 4 === 1
+          ? counter * 2.5
+          : counter % 4 === 2
+            ? `string_${counter}`
+            : true
+
+    arr.push(item)
+    counter++
+  }
+
+  return JSON.stringify(arr)
+}
+
+/**
+ * Generate deeply nested structure
+ */
+function generateDeepNested(depth: number): string {
+  let obj: any = { leaf: 'value' }
+
+  for (let i = 0; i < depth; i++) {
+    obj = { level: i, child: obj }
+  }
+
+  return JSON.stringify(obj)
+}
+
+/**
+ * Generate API response pattern
+ */
+function generateAPIResponse(): string {
+  return JSON.stringify({
+    status: 'success',
+    data: {
+      users: Array.from({ length: 50 }, (_, i) => ({
+        id: i,
+        username: `user${i}`,
+        email: `user${i}@example.com`,
+        profile: {
+          firstName: `First${i}`,
+          lastName: `Last${i}`,
+          age: 20 + (i % 50),
+          tags: [`tag1`, `tag2`, `tag3`],
+        },
+      })),
+      pagination: {
+        page: 1,
+        perPage: 50,
+        total: 1000,
+        hasNext: true,
+      },
+    },
+    timestamp: Date.now(),
+  })
+}
+
+/**
+ * Generate config file pattern
+ */
+function generateConfigFile(): string {
+  return JSON.stringify({
+    server: {
+      host: 'localhost',
+      port: 3000,
+      ssl: {
+        enabled: true,
+        certPath: '/etc/ssl/cert.pem',
+        keyPath: '/etc/ssl/key.pem',
+      },
+    },
+    database: {
+      host: 'db.example.com',
+      port: 5432,
+      name: 'myapp',
+      pool: {
+        min: 2,
+        max: 10,
+        idleTimeout: 30000,
+      },
+    },
+    features: {
+      auth: true,
+      api: true,
+      websockets: false,
+      cache: {
+        enabled: true,
+        ttl: 3600,
+        provider: 'redis',
+      },
+    },
+    logging: {
+      level: 'info',
+      format: 'json',
+      outputs: ['console', 'file'],
+    },
+  })
+}
+
+describe('Round 2 Revised: Optimization Comparison', () => {
+  describe('Small JSON (< 10KB)', () => {
+    it('parse_small_object_1kb', () => {
+      const json = generateNestedObject(1000)
+      const size = json.length / 1024
+
+      const round1Stats = benchIters(2000, () => parseDirect(json))
+      const round2Stats = benchIters(2000, () => parseDirectOptimized(json))
+
+      const speedup = round1Stats.p50 / round2Stats.p50
+
+      console.log(`parse_small_object_1kb:`)
+      console.log(`  Size: ${size.toFixed(2)} KB`)
+      console.log(`  Round 1 p50: ${round1Stats.p50.toFixed(3)}ms`)
+      console.log(`  Round 2 p50: ${round2Stats.p50.toFixed(3)}ms`)
+      console.log(`  Speedup: ${speedup.toFixed(2)}x`)
+
+      // Expect at least 1.2x speedup
+      expect(speedup).toBeGreaterThanOrEqual(1.2)
+    })
+
+    it('parse_small_array_5kb', () => {
+      const json = generateLargeArray(5000)
+      const size = json.length / 1024
+
+      const round1Stats = benchIters(2000, () => parseDirect(json))
+      const round2Stats = benchIters(2000, () => parseDirectOptimized(json))
+
+      const speedup = round1Stats.p50 / round2Stats.p50
+
+      console.log(`parse_small_array_5kb:`)
+      console.log(`  Size: ${size.toFixed(2)} KB`)
+      console.log(`  Round 1 p50: ${round1Stats.p50.toFixed(3)}ms`)
+      console.log(`  Round 2 p50: ${round2Stats.p50.toFixed(3)}ms`)
+      console.log(`  Speedup: ${speedup.toFixed(2)}x`)
+
+      expect(speedup).toBeGreaterThanOrEqual(1.2)
+    })
+  })
+
+  describe('Medium JSON (10-100KB)', () => {
+    it('parse_medium_object_50kb', () => {
+      const json = generateNestedObject(50000)
+      const size = json.length / 1024
+
+      const round1Stats = benchIters(1000, () => parseDirect(json))
+      const round2Stats = benchIters(1000, () => parseDirectOptimized(json))
+
+      const speedup = round1Stats.p50 / round2Stats.p50
+
+      console.log(`parse_medium_object_50kb:`)
+      console.log(`  Size: ${size.toFixed(2)} KB`)
+      console.log(`  Round 1 p50: ${round1Stats.p50.toFixed(3)}ms`)
+      console.log(`  Round 2 p50: ${round2Stats.p50.toFixed(3)}ms`)
+      console.log(`  Speedup: ${speedup.toFixed(2)}x`)
+
+      expect(speedup).toBeGreaterThanOrEqual(1.3)
+    })
+
+    it('parse_medium_array_75kb', () => {
+      const json = generateLargeArray(75000)
+      const size = json.length / 1024
+
+      const round1Stats = benchIters(1000, () => parseDirect(json))
+      const round2Stats = benchIters(1000, () => parseDirectOptimized(json))
+
+      const speedup = round1Stats.p50 / round2Stats.p50
+
+      console.log(`parse_medium_array_75kb:`)
+      console.log(`  Size: ${size.toFixed(2)} KB`)
+      console.log(`  Round 1 p50: ${round1Stats.p50.toFixed(3)}ms`)
+      console.log(`  Round 2 p50: ${round2Stats.p50.toFixed(3)}ms`)
+      console.log(`  Speedup: ${speedup.toFixed(2)}x`)
+
+      expect(speedup).toBeGreaterThanOrEqual(1.3)
+    })
+  })
+
+  describe('Large JSON (100KB-1MB)', () => {
+    it('parse_large_object_500kb', () => {
+      const json = generateNestedObject(500000)
+      const size = json.length / 1024
+
+      const round1Stats = benchIters(200, () => parseDirect(json))
+      const round2Stats = benchIters(200, () => parseDirectOptimized(json))
+
+      const speedup = round1Stats.p50 / round2Stats.p50
+
+      console.log(`parse_large_object_500kb:`)
+      console.log(`  Size: ${size.toFixed(2)} KB`)
+      console.log(`  Round 1 p50: ${round1Stats.p50.toFixed(3)}ms`)
+      console.log(`  Round 2 p50: ${round2Stats.p50.toFixed(3)}ms`)
+      console.log(`  Speedup: ${speedup.toFixed(2)}x`)
+
+      expect(speedup).toBeGreaterThanOrEqual(1.4)
+    })
+
+    it('parse_large_array_1mb', () => {
+      const json = generateLargeArray(1024000)
+      const size = json.length / 1024
+
+      const round1Stats = benchIters(100, () => parseDirect(json))
+      const round2Stats = benchIters(100, () => parseDirectOptimized(json))
+
+      const speedup = round1Stats.p50 / round2Stats.p50
+
+      console.log(`parse_large_array_1mb:`)
+      console.log(`  Size: ${size.toFixed(2)} KB`)
+      console.log(`  Round 1 p50: ${round1Stats.p50.toFixed(3)}ms`)
+      console.log(`  Round 2 p50: ${round2Stats.p50.toFixed(3)}ms`)
+      console.log(`  Speedup: ${speedup.toFixed(2)}x`)
+
+      expect(speedup).toBeGreaterThanOrEqual(1.4)
+    })
+  })
+
+  describe('Deep Nesting', () => {
+    it('parse_deep_nested_100', () => {
+      const json = generateDeepNested(100)
+      const size = json.length / 1024
+
+      const round1Stats = benchIters(2000, () => parseDirect(json))
+      const round2Stats = benchIters(2000, () => parseDirectOptimized(json))
+
+      const speedup = round1Stats.p50 / round2Stats.p50
+
+      console.log(`parse_deep_nested_100:`)
+      console.log(`  Size: ${size.toFixed(2)} KB`)
+      console.log(`  Round 1 p50: ${round1Stats.p50.toFixed(3)}ms`)
+      console.log(`  Round 2 p50: ${round2Stats.p50.toFixed(3)}ms`)
+      console.log(`  Speedup: ${speedup.toFixed(2)}x`)
+
+      expect(speedup).toBeGreaterThanOrEqual(1.3)
+    })
+
+    it('parse_deep_nested_500', () => {
+      const json = generateDeepNested(500)
+      const size = json.length / 1024
+
+      const round1Stats = benchIters(1000, () => parseDirect(json))
+      const round2Stats = benchIters(1000, () => parseDirectOptimized(json))
+
+      const speedup = round1Stats.p50 / round2Stats.p50
+
+      console.log(`parse_deep_nested_500:`)
+      console.log(`  Size: ${size.toFixed(2)} KB`)
+      console.log(`  Round 1 p50: ${round1Stats.p50.toFixed(3)}ms`)
+      console.log(`  Round 2 p50: ${round2Stats.p50.toFixed(3)}ms`)
+      console.log(`  Speedup: ${speedup.toFixed(2)}x`)
+
+      expect(speedup).toBeGreaterThanOrEqual(1.3)
+    })
+  })
+
+  describe('Real-world Patterns', () => {
+    it('parse_api_response', () => {
+      const json = generateAPIResponse()
+      const size = json.length / 1024
+
+      const round1Stats = benchIters(2000, () => parseDirect(json))
+      const round2Stats = benchIters(2000, () => parseDirectOptimized(json))
+
+      const speedup = round1Stats.p50 / round2Stats.p50
+
+      console.log(`parse_api_response:`)
+      console.log(`  Size: ${size.toFixed(2)} KB`)
+      console.log(`  Round 1 p50: ${round1Stats.p50.toFixed(3)}ms`)
+      console.log(`  Round 2 p50: ${round2Stats.p50.toFixed(3)}ms`)
+      console.log(`  Speedup: ${speedup.toFixed(2)}x`)
+
+      expect(speedup).toBeGreaterThanOrEqual(1.3)
+    })
+
+    it('parse_config_file', () => {
+      const json = generateConfigFile()
+      const size = json.length / 1024
+
+      const round1Stats = benchIters(2000, () => parseDirect(json))
+      const round2Stats = benchIters(2000, () => parseDirectOptimized(json))
+
+      const speedup = round1Stats.p50 / round2Stats.p50
+
+      console.log(`parse_config_file:`)
+      console.log(`  Size: ${size.toFixed(2)} KB`)
+      console.log(`  Round 1 p50: ${round1Stats.p50.toFixed(3)}ms`)
+      console.log(`  Round 2 p50: ${round2Stats.p50.toFixed(3)}ms`)
+      console.log(`  Speedup: ${speedup.toFixed(2)}x`)
+
+      expect(speedup).toBeGreaterThanOrEqual(1.3)
+    })
+  })
+})

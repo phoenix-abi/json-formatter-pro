@@ -1,0 +1,72 @@
+[
+  {
+    "id": 0,
+    "field_0": 639,
+    "field_1": "value_0_1",
+    "field_2": true,
+    "field_3": null
+  },
+  {
+    "id": 1,
+    "field_0": "value_1_0",
+    "field_1": false,
+    "field_2": null,
+    "field_3": 238
+  },
+  {
+    "id": 2,
+    "field_0": true,
+    "field_1": null,
+    "field_2": 736,
+    "field_3": "value_2_3"
+  },
+  {
+    "id": 3,
+    "field_0": null,
+    "field_1": 484,
+    "field_2": "value_3_2",
+    "field_3": false
+  },
+  {
+    "id": 4,
+    "field_0": 588,
+    "field_1": "value_4_1",
+    "field_2": false,
+    "field_3": null
+  },
+  {
+    "id": 5,
+    "field_0": "value_5_0",
+    "field_1": true,
+    "field_2": null,
+    "field_3": 311
+  },
+  {
+    "id": 6,
+    "field_0": true,
+    "field_1": null,
+    "field_2": 679,
+    "field_3": "value_6_3"
+  },
+  {
+    "id": 7,
+    "field_0": null,
+    "field_1": 923,
+    "field_2": "value_7_2",
+    "field_3": false
+  },
+  {
+    "id": 8,
+    "field_0": 294,
+    "field_1": "value_8_1",
+    "field_2": false,
+    "field_3": null
+  },
+  {
+    "id": 9,
+    "field_0": "value_9_0",
+    "field_1": true,
+    "field_2": null,
+    "field_3": 670
+  }
+]

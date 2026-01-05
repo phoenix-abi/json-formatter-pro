@@ -1,0 +1,173 @@
+/* Base button styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px 16px;
+  border: 1px solid;
+  border-radius: 6px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
+    Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.2, 0, 0, 1);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--focus-ring, #0969da);
+  outline-offset: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn:focus-visible {
+    outline-color: var(--focus-ring, #58a6ff);
+  }
+}
+
+/* Secondary variant (default) */
+.btn-secondary {
+  background: var(--btn-bg, #f6f8fa);
+  border-color: var(--border, rgba(31, 35, 40, 0.15));
+  color: var(--fg, #24292f);
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-secondary {
+    background: var(--btn-bg, #21262d);
+    border-color: var(--border, rgba(240, 246, 252, 0.1));
+    color: var(--fg, #c9d1d9);
+  }
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--btn-hover-bg, #f3f4f6);
+  border-color: var(--border-hover, rgba(31, 35, 40, 0.25));
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-secondary:hover:not(:disabled) {
+    background: var(--btn-hover-bg, #30363d);
+    border-color: var(--border-hover, rgba(240, 246, 252, 0.2));
+  }
+}
+
+.btn-secondary:active:not(:disabled) {
+  background: var(--btn-active-bg, #ebecef);
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-secondary:active:not(:disabled) {
+    background: var(--btn-active-bg, #282e33);
+  }
+}
+
+/* Primary variant */
+.btn-primary {
+  background: var(--btn-primary-bg, #2da44e);
+  border-color: var(--btn-primary-border, rgba(27, 31, 36, 0.15));
+  color: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-primary {
+    background: var(--btn-primary-bg, #238636);
+    border-color: var(--btn-primary-border, rgba(240, 246, 252, 0.1));
+  }
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--btn-primary-hover-bg, #2c974b);
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-primary:hover:not(:disabled) {
+    background: var(--btn-primary-hover-bg, #2ea043);
+  }
+}
+
+.btn-primary:active:not(:disabled) {
+  background: var(--btn-primary-active-bg, #298e46);
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-primary:active:not(:disabled) {
+    background: var(--btn-primary-active-bg, #26923f);
+  }
+}
+
+/* Tertiary variant (minimal) */
+.btn-tertiary {
+  background: transparent;
+  border-color: transparent;
+  color: var(--accent, #0969da);
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-tertiary {
+    color: var(--accent, #58a6ff);
+  }
+}
+
+.btn-tertiary:hover:not(:disabled) {
+  background: var(--btn-hover-bg, rgba(234, 238, 242, 0.5));
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-tertiary:hover:not(:disabled) {
+    background: var(--btn-hover-bg, rgba(177, 186, 196, 0.12));
+  }
+}
+
+.btn-tertiary:active:not(:disabled) {
+  background: var(--btn-active-bg, rgba(234, 238, 242, 1));
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-tertiary:active:not(:disabled) {
+    background: var(--btn-active-bg, rgba(177, 186, 196, 0.2));
+  }
+}
+
+/* Danger variant */
+.btn-danger {
+  background: var(--btn-danger-bg, #cf222e);
+  border-color: var(--btn-danger-border, rgba(27, 31, 36, 0.15));
+  color: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-danger {
+    background: var(--btn-danger-bg, #da3633);
+    border-color: var(--btn-danger-border, rgba(240, 246, 252, 0.1));
+  }
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: var(--btn-danger-hover-bg, #a40e26);
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-danger:hover:not(:disabled) {
+    background: var(--btn-danger-hover-bg, #b62324);
+  }
+}
+
+.btn-danger:active:not(:disabled) {
+  background: var(--btn-danger-active-bg, #8e1327);
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-danger:active:not(:disabled) {
+    background: var(--btn-danger-active-bg, #a0191f);
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "version": "1.0.0",
+  "description": "Performance baseline for custom parser vs JSON.parse()",
+  "tolerance": {
+    "default": {
+      "pct": 0.10,
+      "abs_ms": 3
+    },
+    "parser-comparison": {
+      "pct": 0.15,
+      "abs_ms": 5
+    },
+    "parser-memory": {
+      "pct": 0.20,
+      "abs_ms": 10
+    }
+  },
+  "samples": [
+    {
+      "suite": "parser-comparison",
+      "case": "parse_small_object_1kb_native",
+      "metrics": {
+        "ms_p50": 0.1,
+        "ms_p95": 0.2,
+        "size_bytes": 1024
+      },
+      "n": 1000
+    },
+    {
+      "suite": "parser-comparison",
+      "case": "parse_small_object_1kb_custom",
+      "metrics": {
+        "ms_p50": 0.2,
+        "ms_p95": 0.4,
+        "size_bytes": 1024,
+        "slowdown_factor": 2.0
+      },
+      "n": 1000
+    },
+    {
+      "suite": "parser-comparison",
+      "case": "parse_medium_object_50kb_native",
+      "metrics": {
+        "ms_p50": 2.0,
+        "ms_p95": 4.0,
+        "size_bytes": 51200
+      },
+      "n": 200
+    },
+    {
+      "suite": "parser-comparison",
+      "case": "parse_medium_object_50kb_custom",
+      "metrics": {
+        "ms_p50": 4.0,
+        "ms_p95": 8.0,
+        "size_bytes": 51200,
+        "slowdown_factor": 2.0
+      },
+      "n": 200
+    },
+    {
+      "suite": "parser-comparison",
+      "case": "parse_large_object_500kb_native",
+      "metrics": {
+        "ms_p50": 20.0,
+        "ms_p95": 40.0,
+        "size_bytes": 512000
+      },
+      "n": 50
+    },
+    {
+      "suite": "parser-comparison",
+      "case": "parse_large_object_500kb_custom",
+      "metrics": {
+        "ms_p50": 40.0,
+        "ms_p95": 80.0,
+        "size_bytes": 512000,
+        "slowdown_factor": 2.0
+      },
+      "n": 50
+    },
+    {
+      "suite": "parser-memory",
+      "case": "parse_memory_100kb",
+      "metrics": {
+        "payload_mb": 0.1,
+        "native_heap_delta_mb": 0.15,
+        "custom_heap_delta_mb": 0.25,
+        "custom_overhead_factor": 2.5
+      },
+      "n": 1
+    },
+    {
+      "suite": "parser-memory",
+      "case": "parse_memory_1mb",
+      "metrics": {
+        "payload_mb": 1.0,
+        "native_heap_delta_mb": 1.5,
+        "custom_heap_delta_mb": 2.5,
+        "custom_overhead_factor": 2.5
+      },
+      "n": 1
+    }
+  ],
+  "metadata": {
+    "created": "2025-12-19",
+    "description": "Initial baseline for Phase II custom parser",
+    "targets": {
+      "slowdown_factor": "≤ 2.0x for < 1MB JSON",
+      "memory_overhead": "≤ 3.0x payload size"
+    }
+  }
+}
