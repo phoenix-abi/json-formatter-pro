@@ -22,7 +22,7 @@ const test = base.extend<{ page: Page }>({
 
     const context = await chromium.launchPersistentContext(userDataDir, {
       // Extensions require headful (non-headless) Chromium
-      headless: false,
+      headless: !!process.env.CI,
       args: [
         `--disable-extensions-except=${distDir}`,
         `--load-extension=${distDir}`,

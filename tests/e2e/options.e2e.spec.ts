@@ -17,7 +17,7 @@ const test = base.extend<{ page: Page }>({
     const userDataDir = mkdtempSync(join(os.tmpdir(), 'pw-json-formatter-options-'))
 
     const context = await chromium.launchPersistentContext(userDataDir, {
-      headless: false,
+      headless: !!process.env.CI,
       args: [
         `--disable-extensions-except=${distDir}`,
         `--load-extension=${distDir}`,
