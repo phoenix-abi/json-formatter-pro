@@ -27,7 +27,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run performance tests
-        run: npm test
+        run: npm run test:perf:smoke
         env:
           CI: '1'
 
