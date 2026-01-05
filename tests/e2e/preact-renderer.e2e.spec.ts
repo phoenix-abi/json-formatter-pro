@@ -23,6 +23,8 @@ const test = base.extend<{ page: Page }>({
       args: [
         `--disable-extensions-except=${distDir}`,
         `--load-extension=${distDir}`,
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
       ],
       bypassCSP: true,
     })

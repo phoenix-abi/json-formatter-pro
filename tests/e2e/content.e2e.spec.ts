@@ -25,6 +25,8 @@ const test = base.extend<{ page: Page }>({
       args: [
         `--disable-extensions-except=${distDir}`,
         `--load-extension=${distDir}`,
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
       ],
       // Our content script modifies the page; disabling/relaxing CSP helps in tests
       bypassCSP: true,
