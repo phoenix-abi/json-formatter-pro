@@ -20,7 +20,7 @@ const test = base.extend<{ page: Page }>({
     const userDataDir = mkdtempSync(join(os.tmpdir(), 'pw-preview-'))
 
     const context = await chromium.launchPersistentContext(userDataDir, {
-      headless: true,
+      headless: false,
     })
 
     const page = context.pages()[0] ?? (await context.newPage())
