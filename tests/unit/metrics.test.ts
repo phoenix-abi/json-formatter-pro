@@ -73,6 +73,18 @@ global.fetch = vi.fn((url: string) => {
   return Promise.reject(new Error('Not found'))
 })
 
+// Mock navigator for browser environment functions
+Object.defineProperty(global, 'navigator', {
+  value: {
+    userAgent:
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    language: 'en-US',
+    userAgentData: undefined,
+  },
+  writable: true,
+  configurable: true,
+})
+
 describe('Metrics System', () => {
   beforeEach(async () => {
     // Reset storage before each test
