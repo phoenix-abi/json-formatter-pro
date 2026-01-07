@@ -58,8 +58,7 @@ test('json syntax colors match baseline in light mode', async ({ page }) => {
 })
 
 // surfaces and buttons parity
-// TODO: Fix failing test - see issue #4
-test.skip('light theme parity for surfaces and buttons', async ({ page }) => {
+test('light theme parity for surfaces and buttons', async ({ page }) => {
   // Load the built CSS and inject into a minimal page to avoid needing a dev server
   const cssPath = resolve(__dirname, '../../dist/style.css')
   const css = readFileSync(cssPath, 'utf8')
@@ -98,8 +97,7 @@ test.skip('light theme parity for surfaces and buttons', async ({ page }) => {
 })
 
 // dark theme activation
-// TODO: Fix failing test - see issue #4
-test.skip('explicit dark via data-theme sets dark background', async ({ page }) => {
+test('explicit dark via data-theme sets dark background', async ({ page }) => {
   const cssPath = resolve(__dirname, '../../dist/style.css')
   const css = readFileSync(cssPath, 'utf8')
 
@@ -120,14 +118,12 @@ test.skip('explicit dark via data-theme sets dark background', async ({ page }) 
   expect(bodyBg).toBe('rgb(26, 26, 26)')
 })
 
-// TODO: Fix failing test - see issue #4
-test.skip('system dark applies when not explicitly set', async ({ page }) => {
+test('system dark applies when not explicitly set', async ({ page }) => {
   const cssPath = resolve(__dirname, '../../dist/style.css')
   const css = readFileSync(cssPath, 'utf8')
 
   // Enable dark mode at the browser level so @media (prefers-color-scheme: dark) matches
-  // @ts-ignore
-  await context.setDarkMode(true)
+  await page.context().emulateMedia({ colorScheme: 'dark' })
 
   await page.setContent(`
     <!doctype html>
@@ -148,13 +144,11 @@ test.skip('system dark applies when not explicitly set', async ({ page }) => {
 })
 
 // Regression: in system dark, setting data-theme="light" should keep light tokens (white bg)
-// TODO: Fix failing test - see issue #4
-test.skip('system dark but explicit light attribute keeps light background', async ({ page }) => {
+test('system dark but explicit light attribute keeps light background', async ({ page }) => {
   const cssPath = resolve(__dirname, '../../dist/style.css')
   const css = readFileSync(cssPath, 'utf8')
 
-  // @ts-ignore
-  await context.setDarkMode(true)
+  await page.context().emulateMedia({ colorScheme: 'dark' })
 
   await page.setContent(`
     <!doctype html>
@@ -227,8 +221,7 @@ test('keyboard focus has visible outline (focus-visible via token)', async ({ pa
 })
 
 // light/dark/system without styleDark.css present
-// TODO: Fix failing test - see issue #4
-test.skip('STYLE_07: light and dark still render correctly without styleDark.css', async ({ page }) => {
+test('STYLE_07: light and dark still render correctly without styleDark.css', async ({ page }) => {
   const cssPath = resolve(__dirname, '../../dist/style.css')
   const css = readFileSync(cssPath, 'utf8')
 
@@ -254,8 +247,7 @@ test.skip('STYLE_07: light and dark still render correctly without styleDark.css
 
   // system dark (no explicit)
   await page.evaluate(() => { delete (document.documentElement as any).dataset.theme })
-  // @ts-ignore
-  await context.setDarkMode(true)
+  await page.context().emulateMedia({ colorScheme: 'dark' })
   await page.reload()
   bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor)
   expect(bg).toBe('rgb(26, 26, 26)')
