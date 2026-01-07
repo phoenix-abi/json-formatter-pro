@@ -122,11 +122,11 @@ test('explicit dark via data-theme sets dark background', async ({ page }) => {
 })
 
 test('system dark applies when not explicitly set', async ({ page }) => {
+  // Enable dark mode at the browser level FIRST, before loading any content
+  await page.emulateMedia({ colorScheme: 'dark' })
+  
   const cssPath = resolve(__dirname, '../../dist/style.css')
   const css = readFileSync(cssPath, 'utf8')
-
-  // Enable dark mode at the browser level so @media (prefers-color-scheme: dark) matches
-  await page.context().emulateMedia({ colorScheme: 'dark' })
 
   await page.setContent(`
     <!doctype html>
@@ -149,10 +149,11 @@ test('system dark applies when not explicitly set', async ({ page }) => {
 
 // Regression: in system dark, setting data-theme="light" should keep light tokens (white bg)
 test('system dark but explicit light attribute keeps light background', async ({ page }) => {
+  // Enable dark mode at the browser level FIRST
+  await page.emulateMedia({ colorScheme: 'dark' })
+  
   const cssPath = resolve(__dirname, '../../dist/style.css')
   const css = readFileSync(cssPath, 'utf8')
-
-  await page.context().emulateMedia({ colorScheme: 'dark' })
 
   await page.setContent(`
     <!doctype html>
@@ -252,7 +253,7 @@ test('STYLE_07: light and dark still render correctly without styleDark.css', as
 
   // system dark (no explicit)
   await page.evaluate(() => { delete (document.documentElement as any).dataset.theme })
-  await page.context().emulateMedia({ colorScheme: 'dark' })
+  await page.emulateMedia({ colorScheme: 'dark' })
   await page.reload()
   bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor)
   expect(bg).toBe('rgb(13, 17, 23)')
