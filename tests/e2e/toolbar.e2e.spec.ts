@@ -316,11 +316,15 @@ test('options gear button opens options page', async ({ page }) => {
       </body></html>`
     )
 
-    await expect(page.locator('#json-formatter-toolbar')).toBeVisible()
+    await expect(page.locator('#json-formatter-toolbar')).toBeVisible({ timeout: 10000 })
 
-    // Parser icon should be visible (clicking opens selector)
-    const parserIcon = page.locator('[role="button"][aria-label*="Parser"]')
-    await expect(parserIcon).toBeVisible()
+    // Parser icon button should be visible (shows emoji icon)
+    const parserIcon = page.locator('.parser-icon-button, button[aria-label*="Parser"], button[title*="Parser"]')
+    await expect(parserIcon).toBeVisible({ timeout: 5000 })
+    
+    // Should have a parser emoji (either ⚡ or 🎯)
+    const buttonText = await parserIcon.textContent()
+    expect(buttonText).toMatch(/[⚡🎯]/)
   })
 
   test('parser selector switches between parsers', async ({ page }) => {
@@ -333,21 +337,33 @@ test('options gear button opens options page', async ({ page }) => {
       </body></html>`
     )
 
-    await expect(page.locator('#json-formatter-toolbar')).toBeVisible()
-
-    // Parser icon should be visible
-    const parserIcon = page.locator('[role="button"][aria-label*="Parser"]')
-    await expect(parserIcon).toBeVisible()
+    await expect(page.locator('#json-formatter-toolbar')).toBeVisible({ timeout: 10000 })
 
     // Wait for initial render
     await expect(page.locator('#jsonFormatterParsed')).toBeVisible()
 
-    // Click parser icon to open selector
-    await parserIcon.click()
+    // Parser icon button should be visible
+    const parserIcon = page.locator('.parser-icon-button, button[aria-label*="Parser"]')
+    await expect(parserIcon).toBeVisible()
 
-    // Select a different parser
-    const parserSelector = page.locator('select[aria-label*="parser"]')
-    await expect(parserSelector).toBeVisible()
+    // Click parser icon to open menu
+    await parserIcon.click()
+    await page.waitForTimeout(300)
+
+    // Menu should appear with parser options
+    const menu = page.locator('.parser-icon-menu')
+    await expect(menu).toBeVisible()
+
+    // Should have option buttons (Native and ExactJSON)
+    const options = page.locator('.parser-icon-option')
+    expect(await options.count()).toBeGreaterThanOrEqual(2)
+    
+    // Click on one of the options (the non-active one)
+    const inactiveOption = options.filter({ hasNotClass: 'active' }).first()
+    await inactiveOption.click()
+    
+    // Wait a bit for re-render
+    await page.waitForTimeout(500)
 
     // Content should still be visible after parser change
     await expect(page.locator('#jsonFormatterParsed')).toBeVisible()

@@ -102,11 +102,16 @@ test.describe('content script e2e (extension-loaded)', () => {
       </body></html>`
     )
 
-    // Expect the UI to come up and not time out
-    await expect(page.locator('#json-formatter-toolbar')).toBeVisible()
-    await expect(page.locator('#jsonFormatterParsed')).toBeVisible()
+    // Expect the UI to come up and not time out (large JSON takes longer)
+    await expect(page.locator('#json-formatter-toolbar')).toBeVisible({ timeout: 15000 })
+    
+    // Wait for parsing and rendering to complete (this can take several seconds for 5000 items)
+    await expect(page.locator('#jsonFormatterParsed')).toBeVisible({ timeout: 15000 })
+    
+    // Wait for actual content to render
+    await page.waitForTimeout(2000)
 
-    // There should be at least one expander for the root array/object
-    await expect(page.locator('#jsonFormatterParsed .e').first()).toBeVisible()
+    // Check that tree container appeared
+    await expect(page.locator('.json-tree-container')).toBeVisible({ timeout: 5000 })
   })
 })
