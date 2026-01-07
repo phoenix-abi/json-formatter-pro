@@ -151,9 +151,11 @@ test.describe('Preact Renderer E2E', () => {
     }
   })
 
-  test('renders large JSON with virtualization', async ({ page }) => {
-    // Use a moderately large array (200 items) that's big enough to test virtualization
-    // but small enough to render reliably in CI
+  // Moved to tests/e2e/performance.e2e.spec.ts for separate performance testing
+  // Run with: npm run test:e2e:perf
+  test.skip('renders large JSON with virtualization', async ({ page }) => {
+    // This test has been moved to the performance test suite
+    // See tests/e2e/performance.e2e.spec.ts
     const largeArray = Array.from({ length: 200 }, (_, i) => ({
       id: i,
       value: `Item ${i}`,

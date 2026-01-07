@@ -87,8 +87,11 @@ test.describe('content script e2e (extension-loaded)', () => {
     await expect(page.locator('#jsonFormatterParsed')).toBeVisible()
   })
 
-  test('handles fairly large payloads without freezing', async ({ page }) => {
-    // Build a reasonably large JSON string (reduced from 5000 to 1000 for CI reliability)
+  // Moved to tests/e2e/performance.e2e.spec.ts for separate performance testing
+  // Run with: npm run test:e2e:perf
+  test.skip('handles fairly large payloads without freezing', async ({ page }) => {
+    // This test has been moved to the performance test suite
+    // See tests/e2e/performance.e2e.spec.ts
     const entries = 1000
     const bigObj = {
       items: Array.from({ length: entries }, (_, i) => ({ i, v: 'x'.repeat(10) })),
