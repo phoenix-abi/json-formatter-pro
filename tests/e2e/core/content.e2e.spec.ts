@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 import os from 'node:os'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const distDir = resolve(__dirname, '../../dist')
+const distDir = resolve(__dirname, '../../../dist')
 const manifestPath = resolve(distDir, 'manifest.json')
 
 // Create a Playwright test with a custom page fixture that runs with the
@@ -87,35 +87,4 @@ test.describe('content script e2e (extension-loaded)', () => {
     await expect(page.locator('#jsonFormatterParsed')).toBeVisible()
   })
 
-  // Moved to tests/e2e/performance.e2e.spec.ts for separate performance testing
-  // Run with: npm run test:e2e:perf
-  test.skip('handles fairly large payloads without freezing', async ({ page }) => {
-    // This test has been moved to the performance test suite
-    // See tests/e2e/performance.e2e.spec.ts
-    const entries = 1000
-    const bigObj = {
-      items: Array.from({ length: entries }, (_, i) => ({ i, v: 'x'.repeat(10) })),
-    }
-    const json = JSON.stringify(bigObj)
-
-    await serveHtml(
-      page,
-      `<!doctype html><html lang="en"><head><title></title></head><body>
-        <pre>${json}</pre>
-      </body></html>`
-    )
-
-    // Expect the UI to come up and not time out (large JSON takes longer)
-    await expect(page.locator('#json-formatter-toolbar')).toBeVisible({ timeout: 20000 })
-    
-    // Wait for parsing and rendering to complete  
-    await expect(page.locator('#jsonFormatterParsed')).toBeVisible({ timeout: 20000 })
-    
-    // Check that tree container appeared
-    await expect(page.locator('.json-tree-container')).toBeVisible({ timeout: 10000 })
-    
-    // Verify some content rendered
-    const keys = page.locator('.k')
-    expect(await keys.count()).toBeGreaterThan(0)
-  })
 })

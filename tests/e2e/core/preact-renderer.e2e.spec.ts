@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 import os from 'node:os'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const distDir = resolve(__dirname, '../../dist')
+const distDir = resolve(__dirname, '../../../dist')
 const manifestPath = resolve(distDir, 'manifest.json')
 
 // Create a Playwright test with a custom page fixture that runs with the
@@ -151,41 +151,6 @@ test.describe('Preact Renderer E2E', () => {
     }
   })
 
-  // Moved to tests/e2e/performance.e2e.spec.ts for separate performance testing
-  // Run with: npm run test:e2e:perf
-  test.skip('renders large JSON with virtualization', async ({ page }) => {
-    // This test has been moved to the performance test suite
-    // See tests/e2e/performance.e2e.spec.ts
-    const largeArray = Array.from({ length: 200 }, (_, i) => ({
-      id: i,
-      value: `Item ${i}`,
-    }))
-    const json = JSON.stringify(largeArray)
-
-    await serveHtml(
-      page,
-      `<!doctype html><html lang="en"><head><title></title></head><body>
-        <pre>${json}</pre>
-      </body></html>`
-    )
-
-    // Wait for toolbar first to ensure extension loaded
-    await expect(page.locator('#json-formatter-toolbar')).toBeVisible({ timeout: 15000 })
-
-    // Wait for parsed container
-    await expect(page.locator('#jsonFormatterParsed')).toBeVisible({ timeout: 15000 })
-
-    // Should render with tree container (may take a few seconds for large JSON)
-    await expect(page.locator('.json-tree-container')).toBeVisible({ timeout: 15000 })
-
-    // Verify some content is visible
-    const keys = page.locator('.k')
-    const keyCount = await keys.count()
-    
-    // Should have rendered some nodes (at least a few visible items)
-    expect(keyCount).toBeGreaterThan(5)
-  })
-
   test('linkifies URLs in strings', async ({ page }) => {
     const json = JSON.stringify({
       website: 'https://example.com',
@@ -212,44 +177,6 @@ test.describe('Preact Renderer E2E', () => {
     // HTTP URL should be linkified
     const httpLink = page.locator('a[href="http://insecure.com"]')
     await expect(httpLink).toBeVisible()
-  })
-
-  // Extension doesn't format primitive root values by design
-  // startsLikeJson() only accepts {, [, or " to avoid false positives on plain text
-  test.skip('handles primitives', async ({ page }) => {
-    const json = JSON.stringify(42)
-
-    await serveHtml(
-      page,
-      `<!doctype html><html lang="en"><head><title></title></head><body>
-        <pre>${json}</pre>
-      </body></html>`
-    )
-
-    // This test is skipped because the extension intentionally does not format
-    // primitive JSON values (42, true, false) as root values.
-    // Only objects ({...}), arrays ([...]), and strings ("...") are formatted.
-    await expect(page.locator('.json-tree-container')).toBeVisible()
-    await expect(page.locator('.n').filter({ hasText: '42' })).toBeVisible()
-  })
-
-  // Extension doesn't format null as root value by design
-  // startsLikeJson() only accepts {, [, or " to avoid false positives on plain text
-  test.skip('handles null value', async ({ page }) => {
-    const json = JSON.stringify(null)
-
-    await serveHtml(
-      page,
-      `<!doctype html><html lang="en"><head><title></title></head><body>
-        <pre>${json}</pre>
-      </body></html>`
-    )
-
-    // This test is skipped because the extension intentionally does not format
-    // null, true, false, or number primitives as root values.
-    // Only objects ({...}), arrays ([...]), and strings ("...") are formatted.
-    await expect(page.locator('.json-tree-container')).toBeVisible()
-    await expect(page.locator('.nl').filter({ hasText: 'null' })).toBeVisible()
   })
 
   test('handles boolean values', async ({ page }) => {

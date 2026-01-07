@@ -22,7 +22,7 @@ import { fileURLToPath } from 'node:url'
 import os from 'node:os'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const distDir = resolve(__dirname, '../../dist')
+const distDir = resolve(__dirname, '../../../dist')
 const manifestPath = resolve(distDir, 'manifest.json')
 
 // Test fixture for extension-loaded tests

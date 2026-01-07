@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 import os from 'node:os'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const distDir = resolve(__dirname, '../../dist')
+const distDir = resolve(__dirname, '../../../dist')
 const manifestPath = resolve(distDir, 'manifest.json')
 
 // Create a Playwright test with a custom page fixture that runs with the
@@ -201,38 +201,6 @@ test('options gear button opens options page', async ({ page }) => {
     await expect(formatToggle).toHaveAttribute('aria-checked', 'false')
   })
 
-  // Theme picker is not currently in toolbar - theme changes handled by options page
-  test.skip('theme picker changes document theme', async ({ page }) => {
-    const json = JSON.stringify({ theme: 'test' })
-
-    await serveHtml(
-      page,
-      `<!doctype html><html lang="en"><head><title></title></head><body>
-        <pre>${json}</pre>
-      </body></html>`
-    )
-
-    await expect(page.locator('#json-formatter-toolbar')).toBeVisible()
-
-    const themePicker = page.locator('.theme-picker select')
-    await expect(themePicker).toBeVisible()
-
-    // Default should be system (no data-theme attribute)
-    await expect(page.locator('html')).not.toHaveAttribute('data-theme')
-
-    // Change to dark theme
-    await themePicker.selectOption('dark')
-    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
-
-    // Change to light theme
-    await themePicker.selectOption('light')
-    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
-
-    // Change back to system (removes data-theme)
-    await themePicker.selectOption('system')
-    await expect(page.locator('html')).not.toHaveAttribute('data-theme')
-  })
-
   test('toolbar is sticky positioned', async ({ page }) => {
     const json = JSON.stringify({ scroll: 'test' })
 
@@ -266,44 +234,6 @@ test('options gear button opens options page', async ({ page }) => {
 
     // Toolbar should stay near the top (sticky behavior)
     expect(toolbarAfter!.y).toBeLessThanOrEqual(toolbarBefore!.y + 10)
-  })
-
-  // Theme picker is not currently in toolbar - theme changes handled by options page
-  test.skip('toolbar components maintain state during interactions', async ({ page }) => {
-    const json = JSON.stringify({ state: 'test' })
-
-    await serveHtml(
-      page,
-      `<!doctype html><html lang="en"><head><title></title></head><body>
-        <pre>${json}</pre>
-      </body></html>`
-    )
-
-    await expect(page.locator('#json-formatter-toolbar')).toBeVisible()
-
-    // Set dark theme
-    const themePicker = page.locator('.theme-picker select')
-    await themePicker.selectOption('dark')
-    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
-
-    // Switch to raw view
-    const rawButton = page.locator('button[aria-label="Raw view"]')
-    await rawButton.click()
-    await expect(page.locator('#jsonFormatterRaw')).toBeVisible()
-
-    // Theme should still be dark
-    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
-
-    // Switch back to parsed view
-    const parsedButton = page.locator('button[aria-label="Parsed view"]')
-    await parsedButton.click()
-    await expect(page.locator('#jsonFormatterParsed')).toBeVisible()
-
-    // Theme should still be dark
-    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
-
-    // Theme picker should still show dark
-    await expect(themePicker).toHaveValue('dark')
   })
 
   test('parser selector is visible in toolbar', async ({ page }) => {
@@ -369,39 +299,4 @@ test('options gear button opens options page', async ({ page }) => {
     await expect(page.locator('#jsonFormatterParsed')).toBeVisible()
   })
 
-  // Parser icon maintains state during view toggle  
-  test.skip('parser selector maintains selection during view toggle', async ({ page }) => {
-    const json = JSON.stringify({ maintain: 'state' })
-
-    await serveHtml(
-      page,
-      `<!doctype html><html lang="en"><head><title></title></head><body>
-        <pre>${json}</pre>
-      </body></html>`
-    )
-
-    await expect(page.locator('#json-formatter-toolbar')).toBeVisible()
-
-    const parserSelector = page.locator('select[aria-label="Select JSON parser"]')
-
-    // Set parser to custom
-    await parserSelector.selectOption('custom')
-    await expect(parserSelector).toHaveValue('custom')
-
-    // Switch to raw view
-    const rawButton = page.locator('button[aria-label="Raw view"]')
-    await rawButton.click()
-    await expect(page.locator('#jsonFormatterRaw')).toBeVisible()
-
-    // Parser selector should still show custom
-    await expect(parserSelector).toHaveValue('custom')
-
-    // Switch back to parsed view
-    const parsedButton = page.locator('button[aria-label="Parsed view"]')
-    await parsedButton.click()
-    await expect(page.locator('#jsonFormatterParsed')).toBeVisible()
-
-    // Parser selector should still show custom
-    await expect(parserSelector).toHaveValue('custom')
-  })
 })
