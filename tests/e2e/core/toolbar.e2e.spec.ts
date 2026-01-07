@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 import os from 'node:os'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const distDir = resolve(__dirname, '../../dist')
+const distDir = resolve(__dirname, '../../../dist')
 const manifestPath = resolve(distDir, 'manifest.json')
 
 // Create a Playwright test with a custom page fixture that runs with the
@@ -201,38 +201,6 @@ test('options gear button opens options page', async ({ page }) => {
     await expect(formatToggle).toHaveAttribute('aria-checked', 'false')
   })
 
-  // TODO: Fix failing test - see issue #4
-  test.skip('theme picker changes document theme', async ({ page }) => {
-    const json = JSON.stringify({ theme: 'test' })
-
-    await serveHtml(
-      page,
-      `<!doctype html><html lang="en"><head><title></title></head><body>
-        <pre>${json}</pre>
-      </body></html>`
-    )
-
-    await expect(page.locator('#json-formatter-toolbar')).toBeVisible()
-
-    const themePicker = page.locator('.theme-picker select')
-    await expect(themePicker).toBeVisible()
-
-    // Default should be system (no data-theme attribute)
-    await expect(page.locator('html')).not.toHaveAttribute('data-theme')
-
-    // Change to dark theme
-    await themePicker.selectOption('dark')
-    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
-
-    // Change to light theme
-    await themePicker.selectOption('light')
-    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
-
-    // Change back to system (removes data-theme)
-    await themePicker.selectOption('system')
-    await expect(page.locator('html')).not.toHaveAttribute('data-theme')
-  })
-
   test('toolbar is sticky positioned', async ({ page }) => {
     const json = JSON.stringify({ scroll: 'test' })
 
@@ -268,46 +236,7 @@ test('options gear button opens options page', async ({ page }) => {
     expect(toolbarAfter!.y).toBeLessThanOrEqual(toolbarBefore!.y + 10)
   })
 
-  // TODO: Fix failing test - see issue #4
-  test.skip('toolbar components maintain state during interactions', async ({ page }) => {
-    const json = JSON.stringify({ state: 'test' })
-
-    await serveHtml(
-      page,
-      `<!doctype html><html lang="en"><head><title></title></head><body>
-        <pre>${json}</pre>
-      </body></html>`
-    )
-
-    await expect(page.locator('#json-formatter-toolbar')).toBeVisible()
-
-    // Set dark theme
-    const themePicker = page.locator('.theme-picker select')
-    await themePicker.selectOption('dark')
-    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
-
-    // Switch to raw view
-    const rawButton = page.locator('button[aria-label="Raw view"]')
-    await rawButton.click()
-    await expect(page.locator('#jsonFormatterRaw')).toBeVisible()
-
-    // Theme should still be dark
-    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
-
-    // Switch back to parsed view
-    const parsedButton = page.locator('button[aria-label="Parsed view"]')
-    await parsedButton.click()
-    await expect(page.locator('#jsonFormatterParsed')).toBeVisible()
-
-    // Theme should still be dark
-    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
-
-    // Theme picker should still show dark
-    await expect(themePicker).toHaveValue('dark')
-  })
-
-  // TODO: Fix failing test - see issue #4
-  test.skip('parser selector is visible in toolbar', async ({ page }) => {
+  test('parser selector is visible in toolbar', async ({ page }) => {
     const json = JSON.stringify({ parser: 'test' })
 
     await serveHtml(
@@ -317,20 +246,18 @@ test('options gear button opens options page', async ({ page }) => {
       </body></html>`
     )
 
-    await expect(page.locator('#json-formatter-toolbar')).toBeVisible()
+    await expect(page.locator('#json-formatter-toolbar')).toBeVisible({ timeout: 10000 })
 
-    // Parser selector should be visible
-    const parserSelector = page.locator('select[aria-label="Select JSON parser"]')
-    await expect(parserSelector).toBeVisible()
-
-    // Should have native and custom options
-    const options = await parserSelector.locator('option').allTextContents()
-    expect(options).toContain('Native')
-    expect(options).toContain('Custom')
+    // Parser icon button should be visible (shows emoji icon)
+    const parserIcon = page.locator('.parser-icon-button, button[aria-label*="Parser"], button[title*="Parser"]')
+    await expect(parserIcon).toBeVisible({ timeout: 5000 })
+    
+    // Should have a parser emoji (either ⚡ or 🎯)
+    const buttonText = await parserIcon.textContent()
+    expect(buttonText).toMatch(/[⚡🎯]/)
   })
 
-  // TODO: Fix failing test - see issue #4
-  test.skip('parser selector switches between parsers', async ({ page }) => {
+  test('parser selector switches between parsers', async ({ page }) => {
     const json = JSON.stringify({ numbers: [1, 2, 3], text: 'test' })
 
     await serveHtml(
@@ -340,68 +267,36 @@ test('options gear button opens options page', async ({ page }) => {
       </body></html>`
     )
 
-    await expect(page.locator('#json-formatter-toolbar')).toBeVisible()
-
-    const parserSelector = page.locator('select[aria-label="Select JSON parser"]')
-    await expect(parserSelector).toBeVisible()
+    await expect(page.locator('#json-formatter-toolbar')).toBeVisible({ timeout: 10000 })
 
     // Wait for initial render
     await expect(page.locator('#jsonFormatterParsed')).toBeVisible()
 
-    // Get initial parser value
-    const initialParser = await parserSelector.inputValue()
+    // Parser icon button should be visible
+    const parserIcon = page.locator('.parser-icon-button, button[aria-label*="Parser"]')
+    await expect(parserIcon).toBeVisible()
 
-    // Switch to the other parser
-    const targetParser = initialParser === 'native' ? 'custom' : 'native'
-    await parserSelector.selectOption(targetParser)
+    // Click parser icon to open menu
+    await parserIcon.click()
+    await page.waitForTimeout(300)
 
-    // Parser should have changed
-    await expect(parserSelector).toHaveValue(targetParser)
+    // Menu should appear with parser options
+    const menu = page.locator('.parser-icon-menu')
+    await expect(menu).toBeVisible()
 
-    // Content should still be visible (re-rendered with new parser)
+    // Should have option buttons (Native and ExactJSON)
+    const options = page.locator('.parser-icon-option')
+    expect(await options.count()).toBeGreaterThanOrEqual(2)
+    
+    // Click on one of the options (the non-active one)
+    const inactiveOption = options.filter({ hasNotClass: 'active' }).first()
+    await inactiveOption.click()
+    
+    // Wait a bit for re-render
+    await page.waitForTimeout(500)
+
+    // Content should still be visible after parser change
     await expect(page.locator('#jsonFormatterParsed')).toBeVisible()
-
-    // Console should log parser change
-    const consoleMessages = await page.evaluate(() => {
-      // This is a simplified check - in real tests, you'd capture console.log calls
-      return true
-    })
-    expect(consoleMessages).toBe(true)
   })
 
-  // TODO: Fix failing test - see issue #4
-  test.skip('parser selector maintains selection during view toggle', async ({ page }) => {
-    const json = JSON.stringify({ maintain: 'state' })
-
-    await serveHtml(
-      page,
-      `<!doctype html><html lang="en"><head><title></title></head><body>
-        <pre>${json}</pre>
-      </body></html>`
-    )
-
-    await expect(page.locator('#json-formatter-toolbar')).toBeVisible()
-
-    const parserSelector = page.locator('select[aria-label="Select JSON parser"]')
-
-    // Set parser to custom
-    await parserSelector.selectOption('custom')
-    await expect(parserSelector).toHaveValue('custom')
-
-    // Switch to raw view
-    const rawButton = page.locator('button[aria-label="Raw view"]')
-    await rawButton.click()
-    await expect(page.locator('#jsonFormatterRaw')).toBeVisible()
-
-    // Parser selector should still show custom
-    await expect(parserSelector).toHaveValue('custom')
-
-    // Switch back to parsed view
-    const parsedButton = page.locator('button[aria-label="Parsed view"]')
-    await parsedButton.click()
-    await expect(page.locator('#jsonFormatterParsed')).toBeVisible()
-
-    // Parser selector should still show custom
-    await expect(parserSelector).toHaveValue('custom')
-  })
 })

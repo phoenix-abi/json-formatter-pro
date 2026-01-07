@@ -6,7 +6,7 @@ import os from 'node:os'
 import fg from 'fast-glob'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const distDir = resolve(__dirname, '../../dist')
+const distDir = resolve(__dirname, '../../../dist')
 const manifestPath = resolve(distDir, 'manifest.json')
 
 // Mirror the custom page fixture from content.e2e.spec.ts so we run Chrome with the extension loaded

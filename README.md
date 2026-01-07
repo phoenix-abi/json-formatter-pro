@@ -149,14 +149,21 @@ npm test
 # Run unit tests only
 npm run test:unit
 
-# Run end-to-end tests
+# Run end-to-end tests (fast, excludes performance tests)
 npm run test:e2e
+
+# Run E2E performance tests (large payloads, slow)
+npm run test:e2e:perf
+
+# Run all E2E tests (including performance)
+npm run test:e2e:all
 
 # Update test fixtures/snapshots
 npm run test:update
 
-# Performance benchmarks
-npm run perf:golden        # Quick iteration tests
+# Performance benchmarks (unit-level)
+npm run test:perf          # Quick smoke tests
+npm run test:perf:all      # Full benchmark suite
 npm run perf:compare       # Compare against baseline
 npm run bundle:measure     # Measure bundle size
 
@@ -285,20 +292,41 @@ The project has comprehensive test coverage:
 - **762+ Unit Tests** - Parser, tree utilities, components, integration
 - **Security Audits** - 23 XSS, prototype pollution, DoS tests
 - **Fuzz Testing** - 19 tests with 100 random JSON structures
-- **E2E Tests** - Large fixtures (1MB, 10MB, 100MB), toolbar, parser selection
+- **E2E Tests** - Toolbar, parser selection, themes, rendering
+- **E2E Performance Tests** - Separate suite for large payload testing (1000+ items)
 - **Performance Benchmarks** - Regression gates, memory profiling
 
+### Test Organization
+
+**Unit & Integration Tests** (fast, run on every commit):
 ```bash
-# Run all tests
-npm test
-
-# Run specific test suite
-npm test -- getResult
-npm test -- buildDom
-
-# Watch mode for development
-npm test -- --watch
+npm test                    # All unit & integration tests
+npm test -- getResult       # Specific test suite
+npm test -- --watch         # Watch mode
 ```
+
+**E2E Tests** (medium speed, run on PR/merge):
+```bash
+npm run test:e2e            # Fast e2e tests (excludes performance)
+npm run test:e2e:preview    # Style preview tests only
+```
+
+**E2E Performance Tests** (slow, run separately):
+```bash
+npm run test:e2e:perf       # Large payload tests (1000+ items)
+npm run test:e2e:all        # All e2e including performance
+```
+
+**When to run performance tests:**
+- Working on rendering optimizations
+- Investigating performance regressions
+- Before releases to verify large payload handling
+- NOT needed for most development work
+
+**Performance tests include:**
+- 1000-item JSON objects (20-30s per test)
+- 5000-item JSON objects (60s per test)
+- Virtual scrolling validation
 
 Tests use fixture-based snapshots stored in `tests/fixtures/*.html` with `<!-- EXPECT ... -->` comments.
 

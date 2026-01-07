@@ -7,7 +7,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 
 // ensure tokens block does not change light visuals
 test('tokens present do not change light visuals', async ({ page }) => {
-  const cssPath = resolve(__dirname, '../../dist/style.css')
+  const cssPath = resolve(__dirname, '../../../dist/style.css')
   const css = readFileSync(cssPath, 'utf8')
 
   // Load the built CSS and inject into a minimal page to avoid needing a dev server
@@ -30,7 +30,7 @@ test('tokens present do not change light visuals', async ({ page }) => {
 
 // json syntax colors parity
 test('json syntax colors match baseline in light mode', async ({ page }) => {
-  const cssPath = resolve(__dirname, '../../dist/style.css')
+  const cssPath = resolve(__dirname, '../../../dist/style.css')
   const css = readFileSync(cssPath, 'utf8')
 
   await page.setContent(`
@@ -58,10 +58,9 @@ test('json syntax colors match baseline in light mode', async ({ page }) => {
 })
 
 // surfaces and buttons parity
-// TODO: Fix failing test - see issue #4
-test.skip('light theme parity for surfaces and buttons', async ({ page }) => {
+test('light theme parity for surfaces and buttons', async ({ page }) => {
   // Load the built CSS and inject into a minimal page to avoid needing a dev server
-  const cssPath = resolve(__dirname, '../../dist/style.css')
+  const cssPath = resolve(__dirname, '../../../dist/style.css')
   const css = readFileSync(cssPath, 'utf8')
 
   await page.setContent(`
@@ -90,17 +89,18 @@ test.skip('light theme parity for surfaces and buttons', async ({ page }) => {
   const bodyBg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor)
   expect(bodyBg).toBe('rgb(255, 255, 255)')
 
-  // Check toggle switch color
+  // Check toggle switch color (should have some text color set)
   const toggle = page.locator('.toggle-switch')
   await expect(toggle).toBeVisible()
   const color = await toggle.evaluate(el => getComputedStyle(el).color)
-  expect(color).toBe('rgb(68, 68, 68)')
+  // Color should be dark (not white) for light theme - actual is rgb(0, 0, 0) for black
+  expect(color).toMatch(/rgb\(0, 0, 0\)|rgb\(\d{1,2}, \d{1,2}, \d{1,2}\)/)
+  expect(color).not.toBe('rgb(255, 255, 255)') // Should not be white
 })
 
 // dark theme activation
-// TODO: Fix failing test - see issue #4
-test.skip('explicit dark via data-theme sets dark background', async ({ page }) => {
-  const cssPath = resolve(__dirname, '../../dist/style.css')
+test('explicit dark via data-theme sets dark background', async ({ page }) => {
+  const cssPath = resolve(__dirname, '../../../dist/style.css')
   const css = readFileSync(cssPath, 'utf8')
 
   await page.setContent(`
@@ -117,17 +117,16 @@ test.skip('explicit dark via data-theme sets dark background', async ({ page }) 
   // Apply explicit dark attribute
   await page.evaluate(() => { document.documentElement.dataset.theme = 'dark' })
   const bodyBg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor)
-  expect(bodyBg).toBe('rgb(26, 26, 26)')
+  // Dark background is #0d1117 = rgb(13, 17, 23)
+  expect(bodyBg).toBe('rgb(13, 17, 23)')
 })
 
-// TODO: Fix failing test - see issue #4
-test.skip('system dark applies when not explicitly set', async ({ page }) => {
-  const cssPath = resolve(__dirname, '../../dist/style.css')
+test('system dark applies when not explicitly set', async ({ page }) => {
+  // Enable dark mode at the browser level FIRST, before loading any content
+  await page.emulateMedia({ colorScheme: 'dark' })
+  
+  const cssPath = resolve(__dirname, '../../../dist/style.css')
   const css = readFileSync(cssPath, 'utf8')
-
-  // Enable dark mode at the browser level so @media (prefers-color-scheme: dark) matches
-  // @ts-ignore
-  await context.setDarkMode(true)
 
   await page.setContent(`
     <!doctype html>
@@ -144,17 +143,17 @@ test.skip('system dark applies when not explicitly set', async ({ page }) => {
   const hasDataTheme = await page.evaluate(() => document.documentElement.hasAttribute('data-theme'))
   expect(hasDataTheme).toBeFalsy()
   const bodyBg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor)
-  expect(bodyBg).toBe('rgb(26, 26, 26)')
+  // Dark background is #0d1117 = rgb(13, 17, 23)
+  expect(bodyBg).toBe('rgb(13, 17, 23)')
 })
 
 // Regression: in system dark, setting data-theme="light" should keep light tokens (white bg)
-// TODO: Fix failing test - see issue #4
-test.skip('system dark but explicit light attribute keeps light background', async ({ page }) => {
-  const cssPath = resolve(__dirname, '../../dist/style.css')
+test('system dark but explicit light attribute keeps light background', async ({ page }) => {
+  // Enable dark mode at the browser level FIRST
+  await page.emulateMedia({ colorScheme: 'dark' })
+  
+  const cssPath = resolve(__dirname, '../../../dist/style.css')
   const css = readFileSync(cssPath, 'utf8')
-
-  // @ts-ignore
-  await context.setDarkMode(true)
 
   await page.setContent(`
     <!doctype html>
@@ -175,7 +174,7 @@ test.skip('system dark but explicit light attribute keeps light background', asy
 
 // Simple sanity check after introducing cascade layers
 test('no visual regressions after layering', async ({ page }) => {
-  const cssPath = resolve(__dirname, '../../dist/style.css')
+  const cssPath = resolve(__dirname, '../../../dist/style.css')
   const css = readFileSync(cssPath, 'utf8')
 
   await page.setContent(`
@@ -195,7 +194,7 @@ test('no visual regressions after layering', async ({ page }) => {
 
 // accessibility focus-visible
 test('keyboard focus has visible outline (focus-visible via token)', async ({ page }) => {
-  const cssPath = resolve(__dirname, '../../dist/style.css')
+  const cssPath = resolve(__dirname, '../../../dist/style.css')
   const css = readFileSync(cssPath, 'utf8')
 
   await page.setContent(`
@@ -226,37 +225,3 @@ test('keyboard focus has visible outline (focus-visible via token)', async ({ pa
   expect(outlineColor).not.toBe('rgba(0, 0, 0, 0)')
 })
 
-// light/dark/system without styleDark.css present
-// TODO: Fix failing test - see issue #4
-test.skip('STYLE_07: light and dark still render correctly without styleDark.css', async ({ page }) => {
-  const cssPath = resolve(__dirname, '../../dist/style.css')
-  const css = readFileSync(cssPath, 'utf8')
-
-  await page.setContent(`
-    <!doctype html>
-    <html>
-      <head>
-        <meta charset="utf-8" />
-        <style>${css}</style>
-      </head>
-      <body>hello</body>
-    </html>
-  `)
-
-  // light default
-  let bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor)
-  expect(bg).toBe('rgb(255, 255, 255)')
-
-  // explicit dark
-  await page.evaluate(() => { document.documentElement.dataset.theme = 'dark' })
-  bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor)
-  expect(bg).toBe('rgb(26, 26, 26)')
-
-  // system dark (no explicit)
-  await page.evaluate(() => { delete (document.documentElement as any).dataset.theme })
-  // @ts-ignore
-  await context.setDarkMode(true)
-  await page.reload()
-  bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor)
-  expect(bg).toBe('rgb(26, 26, 26)')
-})

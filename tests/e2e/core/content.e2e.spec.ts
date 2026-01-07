@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 import os from 'node:os'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const distDir = resolve(__dirname, '../../dist')
+const distDir = resolve(__dirname, '../../../dist')
 const manifestPath = resolve(distDir, 'manifest.json')
 
 // Create a Playwright test with a custom page fixture that runs with the
@@ -87,27 +87,4 @@ test.describe('content script e2e (extension-loaded)', () => {
     await expect(page.locator('#jsonFormatterParsed')).toBeVisible()
   })
 
-  // TODO: Fix failing test - see issue #4
-  test.skip('handles fairly large payloads without freezing', async ({ page }) => {
-    // Build a big but sub-MAX_LENGTH JSON string (keep moderate for CI)
-    const entries = 5000
-    const bigObj = {
-      items: Array.from({ length: entries }, (_, i) => ({ i, v: 'x'.repeat(10) })),
-    }
-    const json = JSON.stringify(bigObj)
-
-    await serveHtml(
-      page,
-      `<!doctype html><html lang="en"><head><title></title></head><body>
-        <pre>${json}</pre>
-      </body></html>`
-    )
-
-    // Expect the UI to come up and not time out
-    await expect(page.locator('#json-formatter-toolbar')).toBeVisible()
-    await expect(page.locator('#jsonFormatterParsed')).toBeVisible()
-
-    // There should be at least one expander for the root array/object
-    await expect(page.locator('#jsonFormatterParsed .e').first()).toBeVisible()
-  })
 })
